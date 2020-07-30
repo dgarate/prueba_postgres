@@ -1,0 +1,117 @@
+#1.creating database and columns:
+
+CREATE DATABASE prueba;
+
+CREATE TABLE cliente( 
+id SERIAL PRIMARY KEY,
+rut VARCHAR,
+nombre VARCHAR,
+direccion VARCHAR
+);
+
+                                                                                                                                                                 
+CREATE TABLE factura (
+id SERIAL PRIMARY KEY, 
+numero_factura VARCHAR,
+fecha_factura DATE,
+subtotal INT,
+cliente_id INT,
+FOREIGN KEY (cliente_id) REFERENCES cliente(id)
+); 
+
+CREATE TABLE producto( 
+id SERIAL PRIMARY KEY,
+nombre VARCHAR,
+descripcion VARCHAR,
+valor_unit INT
+);
+
+CREATE TABLE rel_fact_prod( 
+factura_id INT REFERENCES factura (id),
+producto_id INT REFERENCES producto (id),
+cantidad INT,
+PRIMARY KEY (factura_id, producto_id)
+);
+
+CREATE TABLE cat_producto (
+id SERIAL PRIMARY KEY, 
+nombre VARCHAR,
+descripcion VARCHAR
+); 
+
+#2.- Loading Data
+
+INSERT INTO cat_producto (nombre,descripcion) VALUES ('categoria1','desc_categoria1');
+INSERT INTO cat_producto (nombre,descripcion) VALUES ('categoria2','desc_categoria2');
+INSERT INTO cat_producto (nombre,descripcion) VALUES ('categoria3','desc_categoria3');
+
+INSERT INTO cliente (rut, nombre,direccion) VALUES ('1','nombre1','direccion1');
+INSERT INTO cliente (rut, nombre,direccion) VALUES ('2','nombre2','direccion2');
+INSERT INTO cliente (rut, nombre,direccion) VALUES ('3','nombre3','direccion3');
+INSERT INTO cliente (rut, nombre,direccion) VALUES ('4','nombre4','direccion4');
+INSERT INTO cliente (rut, nombre,direccion) VALUES ('5','nombre5','direccion5');
+
+INSERT INTO producto (nombre,descripcion,valor_unit) VALUES ('nombre_producto_1','descripcion_producto_1','1');
+INSERT INTO producto (nombre,descripcion,valor_unit) VALUES ('nombre_producto_2','descripcion_producto_2','1');
+INSERT INTO producto (nombre,descripcion,valor_unit) VALUES ('nombre_producto_3','descripcion_producto_3','1');
+INSERT INTO producto (nombre,descripcion,valor_unit) VALUES ('nombre_producto_4','descripcion_producto_4','1');
+INSERT INTO producto (nombre,descripcion,valor_unit) VALUES ('nombre_producto_5','descripcion_producto_5','1');
+INSERT INTO producto (nombre,descripcion,valor_unit) VALUES ('nombre_producto_6','descripcion_producto_6','1');
+INSERT INTO producto (nombre,descripcion,valor_unit) VALUES ('nombre_producto_7','descripcion_producto_7','1');
+INSERT INTO producto (nombre,descripcion,valor_unit) VALUES ('nombre_producto_8','descripcion_producto_8','1');
+
+INSERT INTO factura (numero_factura, cliente_id,fecha_factura,subtotal) VALUES ('1','1','01/01/2020','2');
+INSERT INTO factura (numero_factura, cliente_id,fecha_factura,subtotal) VALUES ('2','1','01/01/2020','3');
+INSERT INTO factura (numero_factura, cliente_id,fecha_factura,subtotal) VALUES ('3','2','01/01/2020','3');
+INSERT INTO factura (numero_factura, cliente_id,fecha_factura,subtotal) VALUES ('4','2','01/01/2020','2');
+INSERT INTO factura (numero_factura, cliente_id,fecha_factura,subtotal) VALUES ('5','2','01/01/2020','3');
+INSERT INTO factura (numero_factura, cliente_id,fecha_factura,subtotal) VALUES ('6','3','01/01/2020','1');
+INSERT INTO factura (numero_factura, cliente_id,fecha_factura,subtotal) VALUES ('7','4','01/01/2020','2');
+INSERT INTO factura (numero_factura, cliente_id,fecha_factura,subtotal) VALUES ('8','4','01/01/2020','3');
+INSERT INTO factura (numero_factura, cliente_id,fecha_factura,subtotal) VALUES ('9','4','01/01/2020','4');
+INSERT INTO factura (numero_factura, cliente_id,fecha_factura,subtotal) VALUES ('10','4','01/01/2020','1');
+
+
+
+INSERT INTO rel_fact_prod (factura_id, producto_id, cantidad) VALUES ('1','1','1');
+INSERT INTO rel_fact_prod (factura_id, producto_id, cantidad) VALUES ('1','2','1');
+
+INSERT INTO rel_fact_prod (factura_id, producto_id, cantidad) VALUES ('2','3','1');
+INSERT INTO rel_fact_prod (factura_id, producto_id, cantidad) VALUES ('2','4','1');
+INSERT INTO rel_fact_prod (factura_id, producto_id, cantidad) VALUES ('2','5','1');
+
+INSERT INTO rel_fact_prod (factura_id, producto_id, cantidad) VALUES ('3','6','1');
+INSERT INTO rel_fact_prod (factura_id, producto_id, cantidad) VALUES ('3','7','1');
+INSERT INTO rel_fact_prod (factura_id, producto_id, cantidad) VALUES ('3','8','1');
+
+INSERT INTO rel_fact_prod (factura_id, producto_id, cantidad) VALUES ('4','1','1');
+INSERT INTO rel_fact_prod (factura_id, producto_id, cantidad) VALUES ('4','2','1');
+
+INSERT INTO rel_fact_prod (factura_id, producto_id, cantidad) VALUES ('5','3','1');
+INSERT INTO rel_fact_prod (factura_id, producto_id, cantidad) VALUES ('5','4','1');
+INSERT INTO rel_fact_prod (factura_id, producto_id, cantidad) VALUES ('5','5','1');
+
+INSERT INTO rel_fact_prod (factura_id, producto_id, cantidad) VALUES ('6','6','1');
+
+INSERT INTO rel_fact_prod (factura_id, producto_id, cantidad) VALUES ('7','7','1');
+INSERT INTO rel_fact_prod (factura_id, producto_id, cantidad) VALUES ('7','8','1');
+
+INSERT INTO rel_fact_prod (factura_id, producto_id, cantidad) VALUES ('8','1','1');
+INSERT INTO rel_fact_prod (factura_id, producto_id, cantidad) VALUES ('8','2','1');
+INSERT INTO rel_fact_prod (factura_id, producto_id, cantidad) VALUES ('8','3','1');
+
+INSERT INTO rel_fact_prod (factura_id, producto_id, cantidad) VALUES ('9','4','1');
+INSERT INTO rel_fact_prod (factura_id, producto_id, cantidad) VALUES ('9','5','1');
+INSERT INTO rel_fact_prod (factura_id, producto_id, cantidad) VALUES ('9','6','1');
+INSERT INTO rel_fact_prod (factura_id, producto_id, cantidad) VALUES ('9','7','1');
+
+
+#3 Queries:
+
+3.1 SELECT cliente.id, nombre FROM cliente INNER JOIN factura ON cliente.id = factura.cliente_id ORDER BY subtotal DESC LIMIT 1;
+
+3.2 SELECT cliente.id, nombre FROM cliente INNER JOIN factura ON cliente.id = factura.cliente_id WHERE subtotal > 100 GROUP BY nombre, cliente.id ORDER BY cliente.id ASC;
+
+3.3 SELECT COUNT(DISTINCT cliente_id) FROM cliente INNER JOIN factura ON cliente.id = factura.cliente_id WHERE factura.id IN (SELECT factura_id FROM rel_fact_prod where producto_id = 6);
+
+
